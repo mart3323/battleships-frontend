@@ -1,0 +1,52 @@
+.board {
+    display: inline-block;
+    border: 1px solid gray;
+}
+.cell {
+    background-size: contain;
+    position: relative;
+    width: 48px;
+ }
+.cell:before{
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+.cell {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.cell.hover.valid{
+    background-color: lightgreen; /* TODO: Better styles, use an image */
+}
+.cell.hover.invalid{
+    background-color: salmon; /* TODO: Better styles, use an image */
+}
+
+.cell:not(.ship){
+    background-image: url("../images/Water.png");
+}
+.cell.ship {
+    background-image: url("../images/Ship.png");
+}
+.board.own .cell.shot, .board.opponent .cell:not(.shot) {
+    background-size: 60%;
+}
+.board.opponent .cell:not(.shot){
+    -webkit-filter: grayscale(60%) brightness(60%);
+    filter: grayscale(60%) brightness(60%);
+}
+
+/* Own table shot fade */
+.board.own .cell.shot {
+    filter: grayscale(60%) brightness(60%);
+    -webkit-filter: grayscale(60%) brightness(60%);
+}
+
+/* Grayscale opponent fog unless .peek*/
+body:not(.peek) .board.opponent .cell:not(.shot) {
+    background-image: url("../images/Water.png");
+    -webkit-filter: grayscale(100%) brightness(60%);
+    filter: grayscale(100%) brightness(60%);
+}

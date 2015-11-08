@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Laevade pommitamine</title>
+
+        <link rel="stylesheet" href="styles/page&misc.css">
+        <link rel="stylesheet" href="styles/gameboard.css">
+
+        <script src="lib/jquery-2.1.4.js"></script>
+        <script src="scripts/jquery_override.js"></script>
+
+        <script src="scripts/TableNavigation.js"></script>
+        <script src="scripts/ServerConnection.js"></script>
+        <script src="scripts/Timer.js"></script>
+
+        <script src="scripts/GameMenu.js"></script>
+        <script src="scripts/ShipPlacement.js"></script>
+        <script src="scripts/ScoreBoard.js"></script>
+        <script src="scripts/MainGame.js"></script>
+
+        <script src="scripts/main.js"></script>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    </head>
+    <body>
+        <div id="pageContainer">
+            <h1 id="title">Laevade pommitamine <a href="offline/">(Online mode)</a></h1>
+            <!-- <div class="button" id="login">Logged in as (Unnamed)</div> -->
+
+            <div class="connection-slider flex"><div class="done"></div></div>
+            <div id="menubar" class="flex">
+                <div class="button selected" id="menu_new_game"><span>New game</span></div>
+                <div class="button" id="menu_scoreboard"><span>Scoreboard</span></div>
+                <div class="button" id="menu_peek" disabled><span>Peek (disabled in online mode)</span></div>
+            </div>
+
+            <div id="pregameoptions">
+
+                <div><label for="name">Name</label></div>
+                <div id="error1">Name must not contain spaces</div>
+                <div><input id="name" type="text" value="Unnamed"></div>
+                <br><hr>
+                <h2>Create game</h2>
+
+                <div id="newgameoptions">
+                    <div class="flex flex_zero_width">
+                        <div><label for="board_size">Board size</label></div>
+                        <div><label for="num_ships">Number of ships</label></div>
+                        <div></div>
+                    </div>
+                    <div class="flex flex_zero_width">
+                        <div><input id="board_size" type="number"></div>
+                        <div><input id="num_ships" type="number"></div>
+                        <div>
+                            <div id="error2">Board size must be between 3 and 10 (inclusive)</div>
+                            <div id="error3">number of ships must be at least 1 and less than board size</div>
+                            <div class="button" id="playgame" disabled>Create</div>
+                        </div>
+                    </div>
+                </div>
+                <br><hr>
+                <h2>Server browser</h2>
+                <div id="joinGame">
+                    <div class="button" id="refresh">Refresh</div>
+                    <div class="flex flex_zero_width">
+                        <div><label for="board_size">Opponent</label></div>
+                        <div><label for="board_size">Board size</label></div>
+                        <div><label for="num_ships">Number of ships</label></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="boards" class="hidden">
+                <div id="gamestatus" class="flex">
+                    <div class="own">Connected</div>
+                    <div class="opponent">Waiting for opponent</div>
+                </div>
+                <table class="board opponent AI">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table class="board own">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <br>
+                <div id="score" class="flex">
+                    <div class="flex vertical">
+                        <div>Võitja</div>
+                        <div></div>
+                    </div>
+                    <div class="flex vertical">
+                        <div>Sinu lasud</div>
+                        <div></div>
+                    </div>
+                    <div class="flex vertical">
+                        <div>Vastase lasud</div>
+                        <div></div>
+                    </div>
+                    <div class="flex vertical">
+                        <div>Kulunud aeg</div>
+                        <div></div>
+                    </div>
+                    <div class="flex vertical">
+                        <div>Laua suurus</div>
+                        <div></div>
+                    </div>
+                    <div class="flex vertical">
+                        <div>Laevade arv</div>
+                        <div></div>
+                    </div>
+                </div>
+                <div class="button" id="submitshipsbutton" disabled>Submit</div>
+            </div>
+
+            <div id="scoreboard" class="hidden">
+                <table>
+                    <tr class="header">
+                        <th>Võitja</th>
+                        <th>Sinu lasud</th>
+                        <th>Vastase lasud</th>
+                        <th>Aeg</th>
+                        <th>Laua suurus</th>
+                        <th>Laevade arv</th>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>debug messages</title>
+    </head>
+    <body>
+        <form action="../cgi-bin/prax3/debug_show_games.py">
+            <h1>debug_show_games</h1>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/get_available_games.py">
+            <h1>get_available_games</h1>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/create_game.py">
+            <h1>create_game</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> num_ships <input type="number" name="num_ships"> </label>
+            <label> board_size <input type="number" name="board_size"> </label>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/join_game.py">
+            <h1>join_game</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> gameID <input type="number" name="gameID"> </label>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/leave_game.py">
+            <h1>leave_game</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> gameID <input type="number" name="gameID"> </label>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/get_game_state.py">
+            <h1>get_game_state</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> gameID <input type="number" name="gameID"> </label>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/submit_ship_placement.py">
+            <h1>submit_ship_placement</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> gameID <input type="number" name="gameID"> </label>
+            <label> ships <input type="text" name="ships"> </label>
+            <input type="submit">
+        </form>
+        <form action="../cgi-bin/prax3/fire_shot.py">
+            <h1>fire_shot</h1>
+            <label> Name <input type="text" name="name"> </label>
+            <label> hash <input type="text" name="hash"> </label>
+            <label> gameID <input type="number" name="gameID"> </label>
+            <label> x <input type="number" name="x"> </label>
+            <label> y <input type="number" name="y"> </label>
+            <input type="submit">
+        </form>
+    </body>
+</html>
