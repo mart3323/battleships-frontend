@@ -16,20 +16,18 @@ var ScoreBoard = {
     displayScores: function () {
         var name = $("#scoreboardFilterName").val();
         name = name == "" ? undefined : name;
+        var sorting = $("#scoreboard").data("sorting");
         $.post("../../cgi-bin/prax3/offline/get_scores.py",{
-            sorting:$("#scoreboard").data("sorting"),
+            sorting: sorting,
             name:name
         }).then(function(games){
-            $("#scoreboard tr:not(.header)").remove();
-            console.log("Games received");
-            console.log(games);
-            if(typeof games == "string"){
+            if(typeof games == "string") {
                 console.error(games);
                 return;
             }
+            $("#scoreboard tr:not(.header)").remove();
             for (var i = 0; i < games.length; i++) {
                 var score = games[i];
-                console.log(score);
                 var row = $("<tr></tr>");
                 row.append($("<td></td>").text(score.name));
                 row.append($("<td></td>").text(score.winner ? score.name : "AI"));
@@ -40,6 +38,5 @@ var ScoreBoard = {
                 $("#scoreboard table").append(row)
             }
         }).fail(function(e){console.warn(e);});
-        console.log("bindings prepared")
     }
 };

@@ -22,17 +22,17 @@ var MainGame = {
             MainGame.checkVictory();
             if(!$(e.target).hasClass("ship")){
                 MainGame.changeTurn();
-                setTimeout(MainGame.AI_Fire_back, AI_DELAY);
+                setTimeout(MainGame.waitForTurn, AI_DELAY);
             }
         }
     },
-    AI_Fire_back: function () {
+    waitForTurn: function () {
         var options = $(".board.own .cell:not(.shot)");
         var target = options[Math.floor(Math.random() * options.length)];
         $(target).addClass("shot");
         if ($(target).hasClass("ship")) {
             if(MainGame.checkVictory()) return;
-            setTimeout(MainGame.AI_Fire_back, AI_DELAY);
+            setTimeout(MainGame.waitForTurn, AI_DELAY);
         } else {
             MainGame.changeTurn();
         }
@@ -43,14 +43,14 @@ var MainGame = {
                 $("#boards *").off();
                 Timer.stop();
                 var playerWon = !$(this).hasClass("own");
-                console.log("Playerwon: "+playerWon);
                 var yourShots = $(".board.opponent .cell.shot").length;
                 var enemyShots = $(".board.own .cell.shot").length;
                 var time = Timer.get() / 1000;
                 var board_size = $("body").data("board_size");
                 var num_ships = $("body").data("num_ships");
-                ScoreBoard.save(playerWon, yourShots, enemyShots, time).then(ScoreBoard.displayScores);
-                MainGame.finish();
+                ScoreBoard.save(playerWon, yourShots, enemyShots, time).then(function(){
+                    $("body").trigger("Scoreboard");
+                });
                 return true;
             }
         })

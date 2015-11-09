@@ -1,4 +1,4 @@
-var AI_DELAY = 250;
+var PING_FREQUENCY = 250;
 
 var MainGame = {
     start: function () {
@@ -17,38 +17,28 @@ var MainGame = {
     },
     onCellClick: function (e) {
         if($(e.target).hasClass("shot")) return;
+        // TODO: Ping server
+        //      If victory, display victory, else changeturn/waitforturn
         if(!$(this).closest(".board").data("turn")){
             $(e.target).addClass("shot");
             MainGame.checkVictory();
             if(!$(e.target).hasClass("ship")){
                 MainGame.changeTurn();
-                setTimeout(MainGame.AI_Fire_back, AI_DELAY);
+                MainGame.waitForTurn()
             }
         }
     },
-    AI_Fire_back: function () {
-        // Start new
-        // end new
-        var options = $(".board.own .cell:not(.shot)");
-        var target = options[Math.floor(Math.random() * options.length)];
-        $(target).addClass("shot");
-        if ($(target).hasClass("ship")) {
-            if(MainGame.checkVictory()) return;
-            setTimeout(MainGame.AI_Fire_back, AI_DELAY);
-        } else {
-            MainGame.changeTurn();
-        }
-    },
-    checkVictory: function () {
-        $(".board").each(function () {
-            if($(this).find(".cell.ship:not(.shot)").length == 0){
-                $("#boards *").off();
-                MainGame.finish($(this));
-                return true;
-            }
-        })
+    waitForTurn: function () {
+        var name = $("body").data("name");
+        var hash = $("body").data("hash");
+        var gameID = $("body").data("gameID");
+        var player_id = $("body").data("player_id");
+        ServerConnection.ping_until(name, hash, gameID, PING_FREQUENCY, function(s){
+            return s.waiting_for == player_id}
+        ).then(MainGame.changeTurn);
     },
     finish: function () {
+        $("#boards *").off();
         Timer.stop();
         var winner = $(this).hasClass("own") ? "Vastane" : "Sina";
         var yourShots = $(".board.opponent .cell.shot").length;

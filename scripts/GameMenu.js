@@ -40,6 +40,7 @@ var GameMenu = {
                 .data("board_size", s.data.board_size)
                 .data("num_ships", s.data.num_ships)
                 .data("gameID", s.data.gameID)
+                .data("player_id", 2)
                 .trigger("ShipPlacement");
         })
     },
@@ -93,6 +94,7 @@ var GameMenu = {
                     .data("board_size", s.data.board_size)
                     .data("num_ships", s.data.num_ships)
                     .data("gameID", s.data.gameID)
+                    .data("player_id", 1)
                     .trigger("ShipPlacement");
             });
         }
