@@ -3,6 +3,8 @@ $(document).ready(function () {
         $("#pregameoptions").hide();
         $("#boards").hide();
         $("#scoreboard").hide();
+        $("#score").hide();
+        $(".board").hide();
     });
 
     $("body").on("New_Game", GameMenu.start);

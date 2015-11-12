@@ -1,10 +1,10 @@
 var ShipPlacement = {
     start: function () {
         $("#boards").show();
-        $(".board.opponent").hide();
-        $("#score").hide();
-        $("#submitshipsbutton").show().attr("disabled", true).off().click(ShipPlacement.finish);
+        $(".board.own").show();
+        $("#submitshipsbutton").show().attr("disabled", true).off().click(ShipPlacement.submitShipPlacement);
         ShipPlacement.generateBoard($(".board.own"));
+        ShipPlacement.generateBoard($(".board.opponent"));
         ShipPlacement.prepHandlers($(".board.own"));
     },
     generateBoard: function (board) {
@@ -24,7 +24,7 @@ var ShipPlacement = {
     },
     prepHandlers: function (board) {
         board.off();
-        board.find(".cell").hover(this.overlay.add, this.overlay.remove);
+        board.find(".cell").hover(ShipPlacement.overlay.add, ShipPlacement.overlay.remove);
         board.on("click", ".cell", ShipPlacement.boardClick);
     },
     isValidPos: function($el){
@@ -94,10 +94,8 @@ var ShipPlacement = {
         }
     },
 
-    finish: function () {
-        var board_state = [];
-
-        function encode(cell) {
+    encodeBoardState: function () {
+        function encode (cell){
             var state = 1;
             if(cell.hasClass("ship")){
                 state *= 2;
@@ -107,26 +105,38 @@ var ShipPlacement = {
             }
             return state
         }
+        var board_state = "";
 
-        $(".board.own tr").each(function(row){
-            var board_state_row = [];
-            $(this).find(".cell").each(function(cell){
-                board_state_row.push(encode($(this)))
+        $(".board.own tr").each(function (row) {
+            $(this).find(".cell").each(function (cell) {
+                board_state += encode($(this));
             })
         });
+        return board_state;
+    },
+
+    submitShipPlacement: function () {
+        var board_state = ShipPlacement.encodeBoardState();
+        console.log(params);
         var params = {
             name: $("body").data("name"),
             hash: $("body").data("hash"),
             gameID: $("body").data("gameID"),
             ships: board_state
         };
-        console.log(params);
-        //$.post("submit_ship_placement", params)
         if(!$(this).attr("disabled")){
-            $("#boards *").off();
             $("#submitshipsbutton").hide();
-            $("body").trigger("MainGame");
+            $.post("../cgi-bin/prax3/submit_ship_placement.py", params).done(function(){
+                ShipPlacement.finish();
+                $("body").trigger("MainGame");
+            }).fail(function(){
+                $("#submitshipsbutton").show();
+            })
         }
+    },
+    finish: function(){
+        $("#boards *").off();
+        $("#boards").hide()
     }
 
 };

@@ -4,7 +4,7 @@ var GameMenu = {
         $("#boards").hide();
         $("#board_size, #num_ships").on("input", GameMenu.onSizeChange);
         $("#name").on("input", GameMenu.onNameChange);
-        $("#playgame").click(GameMenu.createGame);
+        $("#playgame").one("click",GameMenu.createGame);
         $("#pregameoptions").show();
         $("#refresh").click(GameMenu.loadOpenGames);
         GameMenu.loadOpenGames()
@@ -23,7 +23,7 @@ var GameMenu = {
                     appendElement($("<div></div>").text("Join")
                         .addClass("button")
                         .data("gameID",game.gameID)
-                        .click(GameMenu.join_game));
+                        .one("click",GameMenu.join_game));
                     $("#joinGame").append(gameElement);
                 });
             })
@@ -34,9 +34,9 @@ var GameMenu = {
         ServerConnection.join_game(gameID, name).done(function (s) {
             GameMenu.finish();
             $("body")
-                .data("hash", s.data.player_2_hash)
+                .data("hash", s.data.your_hash)
                 .data("name", $("#name").val())
-                .data("opponent", s.data.player_1)
+                .data("opponent", s.data.opponent_name)
                 .data("board_size", s.data.board_size)
                 .data("num_ships", s.data.num_ships)
                 .data("gameID", s.data.gameID)
@@ -90,7 +90,7 @@ var GameMenu = {
                 GameMenu.finish();
                 $("body")
                     .data("name", $("#name").val())
-                    .data("hash", s.data.player_1_hash)
+                    .data("hash", s.data.your_hash)
                     .data("board_size", s.data.board_size)
                     .data("num_ships", s.data.num_ships)
                     .data("gameID", s.data.gameID)
