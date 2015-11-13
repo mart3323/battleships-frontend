@@ -23,8 +23,8 @@ var ServerConnection = {
      */
     ping_until: function (name, hash, gameID, delay, conditionFunction) {
         return new Promise(function(resolve, reject){
-            ping();
-            function ping(conditionalFunction, delay, resolve, reject){
+            ping(conditionFunction, delay, resolve, reject);
+            function ping(conditionFunction, delay, resolve, reject){
                 ServerConnection.request("../cgi-bin/prax3/get_game_state.py",
                     {
                         name: name,
@@ -33,10 +33,12 @@ var ServerConnection = {
                     }
                 ).then(function(s){
                     if(conditionFunction(s)){
-                        promise.resolve(s);
+                        resolve(s);
                     } else {
                         setTimeout(function(){ ping(conditionFunction, delay, resolve, reject); }, delay)
                     }
+                }).else(function(e){
+                    reject(e)
                 });
             }
         });
@@ -117,4 +119,21 @@ var ServerConnection = {
             hash: hash
         })
     },
+    submit_ships: function(gameID, name, hash, board_state){
+        return ServerConnection.request("../cgi-bin/prax3/submit_ship_placement.py",{
+            gameID: gameID,
+            name:name,
+            hash:hash,
+            ships:board_state
+        })
+    },
+    make_shot: function (gameID, name, hash, x, y) {
+        return ServerConnection.request("../cgi-bin/prax3/fire_shot.py", {
+            gameID: gameID,
+            name: name,
+            hash: hash,
+            x: x,
+            y: y
+        })
+    }
 };

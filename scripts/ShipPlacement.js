@@ -116,22 +116,18 @@ var ShipPlacement = {
     },
 
     submitShipPlacement: function () {
-        var board_state = ShipPlacement.encodeBoardState();
-        console.log(params);
-        var params = {
-            name: $("body").data("name"),
-            hash: $("body").data("hash"),
-            gameID: $("body").data("gameID"),
-            ships: board_state
-        };
         if(!$(this).attr("disabled")){
-            $("#submitshipsbutton").hide();
-            $.post("../cgi-bin/prax3/submit_ship_placement.py", params).done(function(){
+            var gameID = $("body").data("gameID");
+            var name = $("body").data("name");
+            var hash = $("body").data("hash");
+            var board_state = ShipPlacement.encodeBoardState();
+            ServerConnection.submit_ships(gameID, name, hash, board_state).then(function () {
                 ShipPlacement.finish();
                 $("body").trigger("MainGame");
-            }).fail(function(){
+            }).else(function () {
                 $("#submitshipsbutton").show();
-            })
+            });
+            $(this).hide();
         }
     },
     finish: function(){

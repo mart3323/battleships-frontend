@@ -1,31 +1,33 @@
-var PING_FREQUENCY = 250;
+var PING_FREQUENCY = 1000;
 
 var MainGame = {
     start: function () {
         $("#gameoptions").hide();
         $("#boards").show();
         $(".board").show();
-        $(".board.opponent .cell").click(MainGame.onCellClick);
-        $(".board.opponent").data("turn", false);
-        $(".board.own").data("turn", true);
-        Timer.start();
-    },
-    changeTurn: function () {
-        $(".board").each(function () {
-            $(this).data("turn", !$(this).data("turn"));
-        })
+        $(".board.opponent").on("click", ".cell", MainGame.onCellClick);
     },
     onCellClick: function (e) {
-        if($(e.target).hasClass("shot")) return;
-        // TODO: Ping server
-        //      If victory, display victory, else changeturn/waitforturn
-        if(!$(this).closest(".board").data("turn")){
-            $(e.target).addClass("shot");
-            MainGame.checkVictory();
-            if(!$(e.target).hasClass("ship")){
-                MainGame.changeTurn();
-                MainGame.waitForTurn()
-            }
+        gameID = $("body").data("gameID");
+        name = $("body").data("name");
+        hash = $("body").data("hash");
+        x = $(e.target).data("x");
+        y = $(e.target).data("y");
+        ServerConnection.make_shot(gameID, name, hash, x, y).then(function () {
+            MainGame.waitForTurn();
+        });
+    },
+    setBoards: function (your_board, opponent_board) {
+        fill($(".board.own"), your_board);
+        fill($(".board.opponent"), opponent_board);
+        function fill($board, board_state) {
+            $.each(board_state, function (y,row) {
+                $.each(row, function (x,cell) {
+                    var $cell = $board.find("tr").eq(y).find(".cell").eq(x);
+                    if(cell%2 == 0){$cell.addClass("ship")}else{$cell.removeClass("ship")}
+                    if(cell%3 == 0){$cell.addClass("shot")}else{$cell.removeClass("shot")}
+                });
+            })
         }
     },
     waitForTurn: function () {
@@ -34,26 +36,17 @@ var MainGame = {
         var gameID = $("body").data("gameID");
         var player_id = $("body").data("player_id");
         ServerConnection.ping_until(name, hash, gameID, PING_FREQUENCY, function(s){
-            return s.waiting_for == player_id}
-        ).then(MainGame.changeTurn);
+            MainGame.setBoards(s.data.your_board, s.data.opponent_board);
+            return s.data.game.your_turn || s.data.game.game_state == "F";
+        }).then(function (e) {
+            if(e.data.game.your_turn){
+                MainGame.turn = e.data.game.your_turn;
+            } else {
+                alert("Game over")
+            }
+        });
     },
     finish: function () {
         $("#boards *").off();
-        Timer.stop();
-        var winner = $(this).hasClass("own") ? "Vastane" : "Sina";
-        var yourShots = $(".board.opponent .cell.shot").length;
-        var enemyShots = $(".board.own .cell.shot").length;
-        var time = Timer.get() / 1000;
-        var board_size = $("body").data("board_size");
-        var num_ships = $("body").data("num_ships");
-        var slots = $("#score").show().find("div.flex.vertical");
-        slots.eq(0).children().eq(1).text(winner);
-        slots.eq(1).children().eq(1).text(yourShots);
-        slots.eq(2).children().eq(1).text(enemyShots);
-        slots.eq(3).children().eq(1).text(time);
-        slots.eq(4).children().eq(1).text(board_size);
-        slots.eq(5).children().eq(1).text(num_ships);
-        ScoreBoard.save(winner, yourShots, enemyShots, time, board_size, num_ships);
-        window.scrollTo(0,document.body.scrollHeight);
     }
 };
