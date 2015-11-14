@@ -5,6 +5,7 @@ $(document).ready(function () {
         $("#scoreboard").hide();
         $("#score").hide();
         $(".board").hide();
+        MainGame.finish();
     });
 
     $("body").on("New_Game", GameMenu.start);

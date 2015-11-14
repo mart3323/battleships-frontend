@@ -16,7 +16,7 @@ var MainGame = {
         y = $(e.target).data("y");
         ServerConnection.make_shot(gameID, name, hash, x, y).then(function (s) {
             if(s.message == "You win!"){
-                alert("You win")
+                $("#gamestatus .status").text("Game over: You win")
             } else {
                 MainGame.waitForTurn();
             }
@@ -39,7 +39,7 @@ var MainGame = {
         var name = $("body").data("name");
         var hash = $("body").data("hash");
         var gameID = $("body").data("gameID");
-        var player_id = $("body").data("player_id");
+        var player_id = $("body").data("player_id")
         ServerConnection.ping_until(name, hash, gameID, PING_FREQUENCY, function(s){
             if(s.data.game.game_state == "G"){
                 MainGame.setBoards(s.data.your_board, s.data.opponent_board);
@@ -49,11 +49,13 @@ var MainGame = {
             if(e.data.game.your_turn){
                 MainGame.turn = e.data.game.your_turn;
             } else if (e.data.game.game_state == "F") {
-                alert("Game over")
+                $("#gamestatus .status").text("Game over: You lose");
+                MainGame.setBoards(s.data.your_board, s.data.opponent_board);
             }
         });
     },
     finish: function () {
+        ServerConnection.stop();
         $("#boards *").off();
     }
 };

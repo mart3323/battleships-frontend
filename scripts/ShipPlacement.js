@@ -66,9 +66,9 @@ var ShipPlacement = {
         var $this = $(e.target);
 
         if($this.hasClass("ship")){
-            $this.removeClass("ship");
-            left($this).removeClass("ship");
-            right($this).removeClass("ship");
+            $this.removeClass("ship").removeClass("left").removeClass("right");
+            left($this).removeClass("ship").removeClass("left").removeClass("right");
+            right($this).removeClass("ship").removeClass("left").removeClass("right");
         } else if(ShipPlacement.isValidPos($this)){
             ShipPlacement.placeShip($this);
         }

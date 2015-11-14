@@ -13,6 +13,10 @@ var ServerConnection = {
         return request;
     },
 
+    stop: function () {
+        console.log("Attempting to stop");
+        ServerConnection.isStopped = true;
+    },
     /**
      * Returns a promise - Keeps requesting game state from the server at certain intervals
      * until conditionFunction returns true or a request fails
@@ -22,14 +26,17 @@ var ServerConnection = {
      * @returns {Promise}
      */
     ping_until: function (name, hash, gameID, delay, conditionFunction) {
+        ServerConnection.isStopped = false;
         return new Promise(function(resolve, reject){
             ping(conditionFunction, delay, resolve, reject);
             function ping(conditionFunction, delay, resolve, reject){
+                if(ServerConnection.isStopped){ console.log("Stopped");reject();return; }
                 ServerConnection.get_game_state(gameID,name, hash)
                 .then(function(s){
                     if(conditionFunction(s)){
                         resolve(s);
                     } else {
+                        console.log("Queueing another");
                         setTimeout(function(){ ping(conditionFunction, delay, resolve, reject); }, delay)
                     }
                 }).else(function(e){
@@ -113,7 +120,6 @@ var ServerConnection = {
             name: name,
             hash: hash
         }).then(function(s){
-            console.log("Status updated");
             var game = s.data.game;
             if(game.game_state == "W"){
                 $("#gamestatus .status").text("Waiting for opponent");
@@ -150,5 +156,8 @@ var ServerConnection = {
             x: x,
             y: y
         })
-    }
+    },
+    get_scores: function (name, sortby, reverse) {
+        return ServerConnection.request("../cgi-bin/prax3/get_scores.py",{name:name, sortby:sortby, reverse:reverse});
+    },
 };
