@@ -6,6 +6,7 @@ var MainGame = {
         $("#boards").show();
         $(".board").show();
         $(".board.opponent").on("click", ".cell", MainGame.onCellClick);
+        MainGame.waitForTurn();
     },
     onCellClick: function (e) {
         gameID = $("body").data("gameID");
@@ -13,8 +14,12 @@ var MainGame = {
         hash = $("body").data("hash");
         x = $(e.target).data("x");
         y = $(e.target).data("y");
-        ServerConnection.make_shot(gameID, name, hash, x, y).then(function () {
-            MainGame.waitForTurn();
+        ServerConnection.make_shot(gameID, name, hash, x, y).then(function (s) {
+            if(s.message == "You win!"){
+                alert("You win")
+            } else {
+                MainGame.waitForTurn();
+            }
         });
     },
     setBoards: function (your_board, opponent_board) {
@@ -36,12 +41,14 @@ var MainGame = {
         var gameID = $("body").data("gameID");
         var player_id = $("body").data("player_id");
         ServerConnection.ping_until(name, hash, gameID, PING_FREQUENCY, function(s){
-            MainGame.setBoards(s.data.your_board, s.data.opponent_board);
+            if(s.data.game.game_state == "G"){
+                MainGame.setBoards(s.data.your_board, s.data.opponent_board);
+            }
             return s.data.game.your_turn || s.data.game.game_state == "F";
         }).then(function (e) {
             if(e.data.game.your_turn){
                 MainGame.turn = e.data.game.your_turn;
-            } else {
+            } else if (e.data.game.game_state == "F") {
                 alert("Game over")
             }
         });

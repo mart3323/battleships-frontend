@@ -25,13 +25,8 @@ var ServerConnection = {
         return new Promise(function(resolve, reject){
             ping(conditionFunction, delay, resolve, reject);
             function ping(conditionFunction, delay, resolve, reject){
-                ServerConnection.request("../cgi-bin/prax3/get_game_state.py",
-                    {
-                        name: name,
-                        hash: hash,
-                        gameID: gameID
-                    }
-                ).then(function(s){
+                ServerConnection.get_game_state(gameID,name, hash)
+                .then(function(s){
                     if(conditionFunction(s)){
                         resolve(s);
                     } else {
@@ -117,7 +112,27 @@ var ServerConnection = {
             gameID: gameID,
             name: name,
             hash: hash
-        })
+        }).then(function(s){
+            console.log("Status updated");
+            var game = s.data.game;
+            if(game.game_state == "W"){
+                $("#gamestatus .status").text("Waiting for opponent");
+            } else if(game.game_state[0] == "X") {
+                $("#gamestatus .status").text("Opponent has left the game, game over");
+                $("#gamestatus .opponent").text("");
+            } else {
+                $("#gamestatus .opponent").text(game.opponent_name);
+                if(game.game_state == "L"){
+                    $("#gamestatus .status").text("Waiting for "+ (game.opponent_turn?game.opponent_name:"you")+" to place ships");
+                } else {
+                    if(game.your_turn){
+                        $("#gamestatus .status").text("Your turn");
+                    } else {
+                        $("#gamestatus .status").text("Opponent's turn");
+                    }
+                }
+            }
+        });
     },
     submit_ships: function(gameID, name, hash, board_state){
         return ServerConnection.request("../cgi-bin/prax3/submit_ship_placement.py",{
