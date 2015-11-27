@@ -59,7 +59,7 @@ var ScoreBoard = {
                 row.append($("<td></td>").text(score.player_1_hits+"/"+score.player_1_shots));
                 row.append($("<td></td>").text(score.player_2));
                 row.append($("<td></td>").text(score.player_2_hits+"/"+score.player_2_shots));
-                row.append($("<td></td>").text("player_"+score.winner));
+                row.append($("<td></td>").text((score.winner ? score.player_1 : score.player_2) + " (p"+score.winner+")"));
                 row.append($("<td></td>").text(score.time));
                 row.append($("<td></td>").text(score.date));
                 $("#scoreboard table").append(row)

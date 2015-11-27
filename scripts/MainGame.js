@@ -8,6 +8,14 @@ var MainGame = {
         $(".board.opponent").on("click", ".cell", MainGame.onCellClick);
         MainGame.waitForTurn();
     },
+    singleBoardUpdate: function () {
+        gameID = $("body").data("gameID");
+        name = $("body").data("name");
+        hash = $("body").data("hash");
+        ServerConnection.get_game_state(gameID, name, hash).then(function (s) {
+            MainGame.setBoards(s.data.your_board, s.data.opponent_board);
+        })
+    },
     onCellClick: function (e) {
         gameID = $("body").data("gameID");
         name = $("body").data("name");
@@ -16,7 +24,9 @@ var MainGame = {
         y = $(e.target).data("y");
         ServerConnection.make_shot(gameID, name, hash, x, y).then(function (s) {
             if(s.message == "You win!"){
-                $("#gamestatus .status").text("Game over: You win")
+                $("#gamestatus .status").text("Game over: You win");
+                MainGame.singleBoardUpdate();
+                MainGame.finish();
             } else {
                 MainGame.waitForTurn();
             }
@@ -50,7 +60,8 @@ var MainGame = {
                 MainGame.turn = e.data.game.your_turn;
             } else if (e.data.game.game_state == "F") {
                 $("#gamestatus .status").text("Game over: You lose");
-                MainGame.setBoards(s.data.your_board, s.data.opponent_board);
+                MainGame.singleBoardUpdate();
+                MainGame.finish();
             }
         });
     },

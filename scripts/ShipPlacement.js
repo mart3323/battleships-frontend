@@ -6,6 +6,8 @@ var ShipPlacement = {
         ShipPlacement.generateBoard($(".board.own"));
         ShipPlacement.generateBoard($(".board.opponent"));
         ShipPlacement.prepHandlers($(".board.own"));
+        $("#gamestatus .status").text("Submit your ships");
+        $("#gamestatus .opponent").text("");
     },
     generateBoard: function (board) {
         board.empty();

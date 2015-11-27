@@ -7,7 +7,7 @@ var GameMenu = {
         $("#playgame").one("click",GameMenu.createGame);
         $("#pregameoptions").show();
         $("#refresh").click(GameMenu.loadOpenGames);
-        GameMenu.loadOpenGames()
+        GameMenu.loadOpenGames();
     },
     loadOpenGames: function () {
         ServerConnection.get_available_games().done(function (s) {

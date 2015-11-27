@@ -121,6 +121,10 @@ var ServerConnection = {
             hash: hash
         }).then(function(s){
             var game = s.data.game;
+            if(game.game_state == "F"){
+                // Don't touch the labels after the game is over!
+                return;
+            }
             if(game.game_state == "W"){
                 $("#gamestatus .status").text("Waiting for opponent");
             } else if(game.game_state[0] == "X") {
